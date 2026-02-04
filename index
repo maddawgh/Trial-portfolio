@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jayanth Gowda | Mechanical Portfolio</title>
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --bg-color: #0f172a;
+            --chain-color: #334155;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.2);
+            --card-bg: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        
+        /* MECHANICAL BACKGROUND */
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle, rgba(56,189,248,0.03) 1px, transparent 1px),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px, 100px 100px, 100px 100px;
+        }
+
+        /* --- NAV BAR --- */
+        nav {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px; z-index: 1000; border-bottom: 2px solid #334155;
+        }
+        .nav-logo { font-weight: 800; font-size: 1.2rem; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-item { color: var(--text-muted); font-size: 0.85rem; cursor: pointer; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; transition: 0.3s; }
+        .nav-item:hover { color: #fff; text-shadow: 0 0 8px var(--accent); }
+
+        /* --- HERO --- */
+        header {
+            min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            padding: 20px;
+        }
+        .profile-gear-wrapper { position: relative; width: 220px; height: 220px; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; }
+        .profile-gear { position: absolute; width: 100%; height: 100%; animation: spin 40s linear infinite; fill: #334155; opacity: 0.5; }
+        .profile-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--accent); z-index: 2; box-shadow: 0 0 40px var(--accent-glow); cursor: pointer; transition: 0.3s;}
+        .profile-img:hover { border-color: #fff; }
+
+        h1 { font-size: 3.5rem; margin-bottom: 10px; background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; color: transparent; font-weight: 800; }
+        .hero-sub { font-size: 1.2rem; color: var(--text-muted); max-width: 800px; }
+
+        /* --- THE GEAR SYSTEM TIMELINE --- */
+        .timeline-section { padding: 80px 20px; max-width: 1400px; margin: 0 auto; position: relative; }
+
+        /* 1. THE MOVING CHAIN */
+        .chain-drive {
+            position: absolute; left: 50%; top: 0; bottom: 0; width: 24px;
+            transform: translateX(-50%);
+            background-image: linear-gradient(#334155 50%, transparent 50%);
+            background-size: 100% 20px; 
+            z-index: 0;
+            border-left: 4px solid #1e293b; border-right: 4px solid #1e293b;
+            animation: driveChain 1s linear infinite; 
+        }
+
+        /* 2. TIMELINE ROWS */
+        .timeline-row {
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 120px; position: relative; z-index: 1;
+        }
+
+        /* 3. SMALL PINION GEAR (CENTER) */
+        .pinion-gear {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            width: 80px; height: 80px;
+            z-index: 5;
+            display: flex; justify-content: center; align-items: center;
+            /* White background behind gear to hide chain */
+            background: var(--bg-color); 
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        
+        .pinion-svg { 
+            width: 100%; height: 100%; 
+            fill: #64748b; /* Lighter Grey */
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.8));
+        }
+
+        /* Pinion Rotation (Fast) */
+        .timeline-row .pinion-svg { animation: spin 4s linear infinite; }
+        .timeline-row.reverse .pinion-svg { animation: spin 4s linear infinite reverse; }
+
+
+        /* 4. LARGE CONTENT GEAR (SIDE) */
+        .gear-card-container {
+            width: 45%; height: 350px;
+            position: relative;
+            display: flex; align-items: center;
+            cursor: pointer;
+            
+            /* ALIGNMENT FIX: 
+               Small Gear Radius = 40px.
+               Large Gear Radius = 130px.
+               We need them to barely touch. 
+               Margin pulls them closer to the center line.
+            */
+            margin-left: 10px; 
+        }
+
+        /* The Spinning Teeth (SAME SVG AS SMALL GEAR, JUST BIGGER) */
+        .gear-teeth {
+            position: absolute; width: 260px; height: 260px;
+            z-index: 1; opacity: 1; left: 0;
+            
+            /* USING THE 12-TOOTH SVG HERE TOO */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%231e293b' stroke='%2338bdf8' stroke-width='1' d='M90 50c0-2.8-1.9-5.2-4.6-5.8l-7.4-1.6c-.8-4.2-2.5-8.2-4.9-11.8l5.2-6.1c1.9-2.2 1.8-5.6-.4-7.7l-5.6-5.6c-2.1-2.1-5.5-2.2-7.7-.4l-6.1 5.2c-3.6-2.4-7.6-4.1-11.8-4.9l-1.6-7.4C44.5 1.9 42.1 0 39.3 0h-8c-2.8 0-5.2 1.9-5.8 4.6l-1.6 7.4c-4.2.8-8.2 2.5-11.8 4.9l-6.1-5.2c-2.2-1.9-5.6-1.8-7.7.4l-5.6 5.6c-2.1 2.1-2.2 5.5-.4 7.7l5.2 6.1c-2.4 3.6-4.1 7.6-4.9 11.8l-7.4 1.6C1.9 45.5 0 47.9 0 50.7v8c0 2.8 1.9 5.2 4.6 5.8l7.4 1.6c.8 4.2 2.5 8.2 4.9 11.8l-5.2 6.1c-1.9 2.2-1.8 5.6.4 7.7l5.6 5.6c2.1 2.1 5.5 2.2 7.7.4l6.1-5.2c3.6 2.4 7.6 4.1 11.8 4.9l1.6 7.4c.6 2.7 3 4.6 5.8 4.6h8c2.8 0 5.2-1.9 5.8-4.6l1.6-7.4c4.2-.8 8.2-2.5 11.8-4.9l6.1 5.2c2.2 1.9 5.6 1.8 7.7-.4l5.6-5.6c2.1-2.1 2.2-5.5.4-7.7l-5.2-6.1c2.4-3.6 4.1-7.6 4.9-11.8l7.4-1.6c2.7-.6 4.6-3 4.6-5.8v-8z'/%3E%3C/svg%3E");
+            background-size: contain; background-repeat: no-repeat;
+            
+            /* Blue Glow */
+            filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.3));
+        }
+
+        /* Large Gear Rotation (Opposite direction to Pinion) */
+        .timeline-row .gear-teeth { animation: spin 12s linear infinite reverse; }
+        .timeline-row.reverse .gear-teeth { animation: spin 12s linear infinite; }
+
+
+        /* The Static Hub (Text Content) */
+        .gear-hub {
+            position: absolute; z-index: 10;
+            width: 170px; height: 170px;
+            background: #0f172a; 
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            padding: 10px;
+            box-shadow: inset 0 0 40px rgba(0,0,0,1);
+            transition: transform 0.3s;
+            left: 45px; /* Centered visually inside the teeth */
+        }
+
+        /* Interactive Hover */
+        .gear-card-container:hover .gear-teeth { filter: drop-shadow(0 0 15px var(--accent)); }
+        .gear-card-container:hover .gear-hub { transform: scale(1.1); border-color: #fff; }
+        
+        .gear-title { font-size: 1rem; font-weight: 800; color: #fff; text-transform: uppercase; margin-bottom: 5px; line-height: 1.2; }
+        .gear-cta { font-size: 0.7rem; color: var(--accent); font-weight: bold; margin-top: 5px; border: 1px solid var(--accent); padding: 4px 12px; border-radius: 20px;}
+
+        /* Narrative Text */
+        .narrative-text { width: 35%; color: var(--text-muted); padding: 0 50px; font-size: 1.15rem; text-align: right; }
+        
+        /* REVERSE LAYOUT (Left Side Gears) */
+        .timeline-row.reverse { flex-direction: row-reverse; }
+        .timeline-row.reverse .narrative-text { text-align: left; }
+        
+        /* Mesh Logic for Left Side */
+        .timeline-row.reverse .gear-card-container { 
+            padding-left: 0; padding-right: 10px; /* Align Mesh */
+            justify-content: flex-end; 
+        }
+        .timeline-row.reverse .gear-teeth { left: auto; right: 0; }
+        .timeline-row.reverse .gear-hub { left: auto; right: 45px; }
+
+
+        /* --- OVERLAYS --- */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 17, 32, 0.98); z-index: 2000; display: none; overflow-y: auto; opacity: 0; transition: opacity 0.4s; }
+        .overlay.active { display: block; opacity: 1; }
+        .overlay-content { max-width: 900px; margin: 80px auto; padding: 40px 20px; animation: slideUp 0.5s ease; }
+        .close-btn { position: fixed; top: 30px; right: 40px; font-size: 3rem; color: var(--text-muted); cursor: pointer; z-index: 2001; }
+        
+        /* TABS */
+        .tab-nav { display: flex; gap: 20px; margin-bottom: 30px; border-bottom: 2px solid #334155; }
+        .tab-btn { padding: 10px 20px; cursor: pointer; font-weight: bold; color: var(--text-muted); border-bottom: 4px solid transparent; }
+        .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-panel { display: none; animation: fadeIn 0.5s; }
+        .tab-panel.active { display: block; }
+        
+        .visual-placeholder { width: 100%; height: 300px; background: #1e293b; border: 1px dashed #475569; display: flex; align-items: center; justify-content: center; color: #64748b; margin-top: 20px; cursor: pointer; position: relative;}
+        .visual-placeholder::after { content: 'Click to Add Image URL'; position: absolute; bottom: 10px; right: 10px; font-size: 0.8rem; opacity: 0.5;}
+        .visual-img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* KEYFRAMES */
+        @keyframes driveChain { from { background-position: 0 0; } to { background-position: 0 20px; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* EDIT MODE */
+        .edit-fab { position: fixed; bottom: 30px; right: 30px; background: var(--accent); color: #000; padding: 12px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 5000; box-shadow: 0 0 20px var(--accent-glow); }
+        .code-export-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; height: 70%; background: #0f172a; border: 2px solid var(--accent); z-index: 6000; padding: 20px; display: none; flex-direction: column; }
+        .code-export-box textarea { width: 100%; height: 90%; background: #1e293b; color: #fff; padding: 10px; margin-bottom:10px; }
+        .editable[contenteditable="true"] { border: 1px dashed var(--accent); background: rgba(56,189,248,0.1); }
+
+        /* MOBILE */
+        @media (max-width: 900px) {
+            .chain-drive, .pinion-gear { display: none; }
+            .timeline-row, .timeline-row.reverse { flex-direction: column; margin-left: 0; margin-bottom: 60px; }
+            .gear-card-container { width: 100%; height: 320px; padding: 0 !important; justify-content: center !important;}
+            .gear-teeth { position: relative; left: auto; right: auto; }
+            .gear-hub { left: auto; right: auto; }
+            .narrative-text { width: 100%; text-align: center; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-logo">Jayanth<span style="color:#fff">Gowda</span></div>
+        <div class="nav-links">
+            <div class="nav-item" onclick="openOverlay('overlay-btech')">Origin</div>
+            <div class="nav-item" onclick="openOverlay('overlay-masters')">Masters</div>
+            <div class="nav-item" onclick="openOverlay('overlay-exp')">Experience</div>
+            <div class="nav-item" onclick="openOverlay('overlay-projects')">Projects</div>
+            <div class="nav-item" onclick="openOverlay('overlay-hobbies')">Hobbies</div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="profile-gear-wrapper">
+            <svg class="profile-gear" viewBox="0 0 100 100"><path d="M90 50c0-2.8-1.9-5.2-4.6-5.8l-7.4-1.6c-.8-4.2-2.5-8.2-4.9-11.8l5.2-6.1c1.9-2.2 1.8-5.6-.4-7.7l-5.6-5.6c-2.1-2.1-5.5-2.2-7.7-.4l-6.1 5.2c-3.6-2.4-7.6-4.1-11.8-4.9l-1.6-7.4C44.5 1.9 42.1 0 39.3 0h-8c-2.8 0-5.2 1.9-5.8 4.6l-1.6 7.4c-4.2.8-8.2 2.5-11.8 4.9l-6.1-5.2c-2.2-1.9-5.6-1.8-7.7.4l-5.6-5.6c-2.1 2.1-2.2 5.5-.4 7.7l5.2 6.1c-2.4 3.6-4.1 7.6-4.9 11.8l-7.4 1.6C1.9 45.5 0 47.9 0 50.7v8c0 2.8 1.9 5.2 4.6 5.8l7.4 1.6c.8 4.2 2.5 8.2 4.9 11.8l-5.2 6.1c-1.9 2.2-1.8 5.6.4 7.7l5.6 5.6c2.1 2.1 5.5 2.2 7.7.4l6.1-5.2c3.6 2.4 7.6 4.1 11.8 4.9l1.6 7.4c.6 2.7 3 4.6 5.8 4.6h8c2.8 0 5.2-1.9 5.8-4.6l1.6-7.4c4.2-.8 8.2-2.5 11.8-4.9l6.1 5.2c2.2 1.9 5.6 1.8 7.7-.4l5.6-5.6c2.1-2.1 2.2-5.5.4-7.7l-5.2-6.1c2.4-3.6 4.1-7.6 4.9-11.8l7.4-1.6c2.7-.6 4.6-3 4.6-5.8v-8z"/></svg>
+            <img src="profile.jpg" alt="Profile" class="profile-img image-editable" onerror="this.src='https://via.placeholder.com/150?text=Upload+Profile.jpg'">
+        </div>
+        <h1 class="editable">Jayanth Gowda</h1>
+        <p class="hero-sub editable">Graduate Mechanical Engineer (M.S.) | Medical Device Design<br>Building FDA-compliant healthcare solutions.</p>
+    </header>
+
+    <div class="timeline-section">
+        <div class="chain-drive"></div>
+
+        <div class="timeline-row">
+            <div class="narrative-text editable">
+                I started in science to understand how things work. I chose <strong>Mechanical Engineering</strong> to design real systems.
+            </div>
+            
+            <div class="pinion-gear">
+                <svg class="pinion-svg" viewBox="0 0 100 100"><path d="M90 50c0-2.8-1.9-5.2-4.6-5.8l-7.4-1.6c-.8-4.2-2.5-8.2-4.9-11.8l5.2-6.1c1.9-2.2 1.8-5.6-.4-7.7l-5.6-5.6c-2.1-2.1-5.5-2.2-7.7-.4l-6.1 5.2c-3.6-2.4-7.6-4.1-11.8-4.9l-1.6-7.4C44.5 1.9 42.1 0 39.3 0h-8c-2.8 0-5.2 1.9-5.8 4.6l-1.6 7.4c-4.2.8-8.2 2.5-11.8 4.9l-6.1-5.2c-2.2-1.9-5.6-1.8-7.7.4l-5.6 5.6c-2.1 2.1-2.2 5.5-.4 7.7l5.2 6.1c-2.4 3.6-4.1 7.6-4.9 11.8l-7.4 1.6C1.9 45.5 0 47.9 0 50.7v8c0 2.8 1.9 5.2 4.6 5.8l7.4 1.6c.8 4.2 2.5 8.2 4.9 11.8l-5.2 6.1c-1.9 2.2-1.8 5.6.4 7.7l5.6 5.6c2.1 2.1 5.5 2.2 7.7.4l6.1-5.2c3.6 2.4 7.6 4.1 11.8 4.9l1.6 7.4c.6 2.7 3 4.6 5.8 4.6h8c2.8 0 5.2-1.9 5.8-4.6l1.6-7.4c4.2-.8 8.2-2.5 11.8-4.9l6.1 5.2c2.2 1.9 5.6 1.8 7.7-.4l5.6-5.6c2.1-2.1 2.2-5.5.4-7.7l-5.2-6.1c2.4-3.6 4.1-7.6 4.9-11.8l7.4-1.6c2.7-.6 4.6-3 4.6-5.8v-8z"/></svg>
+            </div>
+
+            <div class="gear-card-container" onclick="openOverlay('overlay-btech')">
+                <div class="gear-teeth"></div>
+                <div class="gear-hub">
+                    <div class="gear-title editable">Bachelors Foundation</div>
+                    <div class="gear-cta">Inspect</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-row reverse">
+            <div class="narrative-text editable">
+                Seeing a CT Scanner in operation shifted my focus. I pivoted to <strong>Medical Devices</strong> at Stevens.
+            </div>
+            <div class="pinion-gear">
+                <svg class="pinion-svg" viewBox="0 0 100 100"><path d="M90 50c0-2.8-1.9-5.2-4.6-5.8l-7.4-1.6c-.8-4.2-2.5-8.2-4.9-11.8l5.2-6.1c1.9-2.2 1.8-5.6-.4-7.7l-5.6-5.6c-2.1-2.1-5.5-2.2-7.7-.4l-6.1 5.2c-3.6-2.4-7.6-4.1-11.8-4.9l-1.6-7.4C44.5 1.9 42.1 0 39.3 0h-8c-2.8 0-5.2 1.9-5.8 4.6l-1.6 7.4c-4.2.8-8.2 2.5-11.8 4.9l-6.1-5.2c-2.2-1.9-5.6-1.8-7.7.4l-5.6 5.6c-2.1 2.1-2.2 5.5-.4 7.7l5.2 6.1c-2.4 3.6-4.1 7.6-4.9 11.8l-7.4 1.6C1.9 45.5 0 47.9 0 50.7v8c0 2.8 1.9 5.2 4.6 5.8l7.4 1.6c.8 4.2 2.5 8.2 4.9 11.8l-5.2 6.1c-1.9 2.2-1.8 5.6.4 7.7l5.6 5.6c2.1 2.1 5.5 2.2 7.7.4l6.1-5.2c3.6 2.4 7.6 4.1 11.8 4.9l1.6 7.4c.6 2.7 3 4.6 5.8 4.6h8c2.8 0 5.2-1.9 5.8-4.6l1.6-7.4c4.2-.8 8.2-2.5 11.8-4.9l6.1 5.2c2.2 1.9 5.6 1.8 7.7-.4l5.6-5.6c2.1-2.1 2.2-5.5.4-7.7l-5.2-6.1c2.4-3.6 4.1-7.6 4.9-11.8l7.4-1.6c2.7-.6 4.6-3 4.6-5.8v-8z"/></svg>
+            </div>
+            <div class="gear-card-container" onclick="openOverlay('overlay-masters')">
+                <div class="gear-teeth"></div>
+                <div class="gear-hub">
+                    <div class="gear-title editable">Masters at Stevens</div>
+                    <div class="gear-cta">Inspect</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-row">
+            <div class="narrative-text editable">
+                I've focused on manufacturability, reliability, and validation across Toyota and Stevens Labs.
+            </div>
+            <div class="pinion-gear"><svg class="pinion-svg" viewBox="0 0 100 100"><path d="M90 50c0-2.8-1.9-5.2-4.6-5.8l-7.4-1.6c-.8-4.2-2.5-8.2-4.9-11.8l5.2-6.1c1.9-2.2 1.8-5.6-.4-7.7l-5.6-5.6c-2.1-2.1-5.5-2.2-7.7-.4l-6.1 5.2c-3.6-2.4-7.6-4.1-11.8-4.9l-1.6-7.4C44.5 1.9 42.1 0 39.3 0h-8c-2.8 0-5.2 1.9-5.8 4.6l-1.6 7.4c-4.2.8-8.2 2.5-11.8 4.9l-6.1-5.2c-2.2-1.9-5.6-1.8-7.7.4l-5.6 5.6c-2.1 2.1-2.2 5.5-.4 7.7l5.2 6.1c-2.4 3.6-4.1 7.6-4.9 11.8l-7.4 1.6C1.9 45.5 0 47.9 0 50.7v8c0 2.8 1.9 5.2 4.6 5.8l7.4 1.6c.8 4.2 2.5 8.2 4.9 11.8l-5.2 6.1c-1.9 2.2-1.8 5.6.4 7.7l5.6 5.6c2.1 2.1 5.5 2.2 7.7.4l6.1-5.2c3.6 2.4 7.6 4.1 11.8 4.9l1.6 7.4c.6 2.7 3 4.6 5.8 4.6h8c2.8 0 5.2-1.9 5.8-4.6l1.6-7.4c4.2-.8 8.2-2.5 11.8-4.9l6.1 5.2c2.2 1.9 5.6 1.8 7.7-.4l5.6-5.6c2.1-2.1 2.2-5.5.4-7.7l-5.2-6.1c2.4-3.6 4.1-7.6 4.9-11.8l7.4-1.6c2.7-.6 4.6-3 4.6-5.8v-8z"/></svg></div>
+            <div class="gear-card-container" onclick="openOverlay('overlay-exp')">
+                <div class="gear-teeth"></div>
+                <div class="gear-hub">
+                    <div class="gear-title editable">Experience</div>
+                    <div class="gear-cta">Inspect</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-row reverse">
+            <div class="narrative-text editable">
+                Optimizing 3D printing parameters for an Exoskeleton and designing custom Lab Fixtures.
+            </div>
+            <div class="pinion-gear"><svg class="pinion-svg" viewBox="0 0 100 100"><path d="M90 50c0-2.8-1.9-5.2-4.6-5.8l-7.4-1.6c-.8-4.2-2.5-8.2-4.9-11.8l5.2-6.1c1.9-2.2 1.8-5.6-.4-7.7l-5.6-5.6c-2.1-2.1-5.5-2.2-7.7-.4l-6.1 5.2c-3.6-2.4-7.6-4.1-11.8-4.9l-1.6-7.4C44.5 1.9 42.1 0 39.3 0h-8c-2.8 0-5.2 1.9-5.8 4.6l-1.6 7.4c-4.2.8-8.2 2.5-11.8 4.9l-6.1-5.2c-2.2-1.9-5.6-1.8-7.7.4l-5.6 5.6c-2.1 2.1-2.2 5.5-.4 7.7l5.2 6.1c-2.4 3.6-4.1 7.6-4.9 11.8l-7.4 1.6C1.9 45.5 0 47.9 0 50.7v8c0 2.8 1.9 5.2 4.6 5.8l7.4 1.6c.8 4.2 2.5 8.2 4.9 11.8l-5.2 6.1c-1.9 2.2-1.8 5.6.4 7.7l5.6 5.6c2.1 2.1 5.5 2.2 7.7.4l6.1-5.2c3.6 2.4 7.6 4.1 11.8 4.9l1.6 7.4c.6 2.7 3 4.6 5.8 4.6h8c2.8 0 5.2-1.9 5.8-4.6l1.6-7.4c4.2-.8 8.2-2.5 11.8-4.9l6.1 5.2c2.2 1.9 5.6 1.8 7.7-.4l5.6-5.6c2.1-2.1 2.2-5.5.4-7.7l-5.2-6.1c2.4-3.6 4.1-7.6 4.9-11.8l7.4-1.6c2.7-.6 4.6-3 4.6-5.8v-8z"/></svg></div>
+            <div class="gear-card-container" onclick="openOverlay('overlay-projects')">
+                <div class="gear-teeth"></div>
+                <div class="gear-hub">
+                    <div class="gear-title editable">Projects</div>
+                    <div class="gear-cta">Inspect</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-row">
+            <div class="narrative-text editable">
+                Curiosity doesn't stop in the lab. I explore the world through photography and design.
+            </div>
+            <div class="pinion-gear"><svg class="pinion-svg" viewBox="0 0 100 100"><path d="M90 50c0-2.8-1.9-5.2-4.6-5.8l-7.4-1.6c-.8-4.2-2.5-8.2-4.9-11.8l5.2-6.1c1.9-2.2 1.8-5.6-.4-7.7l-5.6-5.6c-2.1-2.1-5.5-2.2-7.7-.4l-6.1 5.2c-3.6-2.4-7.6-4.1-11.8-4.9l-1.6-7.4C44.5 1.9 42.1 0 39.3 0h-8c-2.8 0-5.2 1.9-5.8 4.6l-1.6 7.4c-4.2.8-8.2 2.5-11.8 4.9l-6.1-5.2c-2.2-1.9-5.6-1.8-7.7.4l-5.6 5.6c-2.1 2.1-2.2 5.5-.4 7.7l5.2 6.1c-2.4 3.6-4.1 7.6-4.9 11.8l-7.4 1.6C1.9 45.5 0 47.9 0 50.7v8c0 2.8 1.9 5.2 4.6 5.8l7.4 1.6c.8 4.2 2.5 8.2 4.9 11.8l-5.2 6.1c-1.9 2.2-1.8 5.6.4 7.7l5.6 5.6c2.1 2.1 5.5 2.2 7.7.4l6.1-5.2c3.6 2.4 7.6 4.1 11.8 4.9l1.6 7.4c.6 2.7 3 4.6 5.8 4.6h8c2.8 0 5.2-1.9 5.8-4.6l1.6-7.4c4.2-.8 8.2-2.5 11.8-4.9l6.1 5.2c2.2 1.9 5.6 1.8 7.7-.4l5.6-5.6c2.1-2.1 2.2-5.5.4-7.7l-5.2-6.1c2.4-3.6 4.1-7.6 4.9-11.8l7.4-1.6c2.7-.6 4.6-3 4.6-5.8v-8z"/></svg></div>
+            <div class="gear-card-container" onclick="openOverlay('overlay-hobbies')">
+                <div class="gear-teeth"></div>
+                <div class="gear-hub">
+                    <div class="gear-title editable">Hobbies</div>
+                    <div class="gear-cta">Inspect</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay-btech" class="overlay">
+        <div class="close-btn" onclick="closeOverlay('overlay-btech')">×</div>
+        <div class="overlay-content"><h2 class="editable">B.Tech Details</h2><div class="visual-placeholder image-editable">Upload Visual</div></div>
+    </div>
+    <div id="overlay-masters" class="overlay">
+        <div class="close-btn" onclick="closeOverlay('overlay-masters')">×</div>
+        <div class="overlay-content"><h2 class="editable">Masters Details</h2><div class="visual-placeholder image-editable">Upload Visual</div></div>
+    </div>
+    <div id="overlay-exp" class="overlay">
+        <div class="close-btn" onclick="closeOverlay('overlay-exp')">×</div>
+        <div class="overlay-content"><h2 class="editable">Experience Details</h2><div class="visual-placeholder image-editable">Upload Visual</div></div>
+    </div>
+    <div id="overlay-projects" class="overlay">
+        <div class="close-btn" onclick="closeOverlay('overlay-projects')">×</div>
+        <div class="overlay-content"><h2 class="editable">Project Details</h2><div class="visual-placeholder image-editable">Upload Visual</div></div>
+    </div>
+    <div id="overlay-hobbies" class="overlay">
+        <div class="close-btn" onclick="closeOverlay('overlay-hobbies')">×</div>
+        <div class="overlay-content"><h2 class="editable">Hobbies</h2><div class="visual-placeholder image-editable">Upload Visual</div></div>
+    </div>
+
+    <div class="dev-tools">
+        <button class="edit-fab" onclick="toggleEdit()">✏️ EDIT MODE</button>
+        <button class="edit-fab" style="right: 150px; background: #22c55e;" onclick="exportCode()">💾 EXPORT CODE</button>
+    </div>
+
+    <div class="code-export-box" id="exportBox">
+        <h3 style="color:#fff; margin-bottom:10px;">COPY THIS CODE & PASTE INTO GITHUB:</h3>
+        <textarea id="codeArea"></textarea>
+        <button onclick="document.getElementById('exportBox').style.display='none'" style="margin-top:10px; padding:10px;">CLOSE</button>
+    </div>
+
+    <script>
+        function openOverlay(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeOverlay(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = 'auto'; }
+
+        let isEditable = false;
+        function toggleEdit() {
+            isEditable = !isEditable;
+            document.querySelectorAll('.editable').forEach(el => el.contentEditable = isEditable);
+            document.querySelectorAll('.image-editable').forEach(img => {
+                img.style.cursor = isEditable ? "pointer" : "default";
+                img.style.border = isEditable ? "2px dashed #38bdf8" : "none";
+                img.onclick = isEditable ? function() {
+                    let url = prompt("Enter Image File Name (e.g., 'robot.jpg'):", this.src);
+                    if(url) this.src = url;
+                } : null;
+            });
+            alert(isEditable ? "EDIT MODE ON: Click text to type. Click images to change file names." : "EDIT MODE OFF");
+        }
+
+        function exportCode() {
+            document.querySelectorAll('.editable').forEach(el => el.removeAttribute('contenteditable'));
+            document.querySelectorAll('.image-editable').forEach(el => el.style.border = 'none');
+            let html = document.documentElement.outerHTML;
+            document.getElementById('codeArea').value = html;
+            document.getElementById('exportBox').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
